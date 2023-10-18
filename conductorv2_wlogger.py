@@ -188,7 +188,7 @@ class ConductorV2:
                     try:
                         row[f'{location_str}_grid_obj']=sheet
                         if row.get(f'{location_str}_column_id') == None:
-                                self.fetch_columnid_w_columname(row, df, location_str)
+                            self.fetch_columnid_w_columname(row, df, location_str)
                         self.audit_columntitle_against_columnid(row, df, location_str)
                         self.find_column_index(row, df, location_str)
                     except:
@@ -232,7 +232,7 @@ class ConductorV2:
                 self.ss_post(posting_column_id, f"{location_str}_column_name", row['CONDUCTOR_rowid'], row[f'{location_str}_column_name'])
         except IndexError:
             self.ss_log(row['CONDUCTOR_rowid'], f"{location_str} COLUMN ID ERROR: Column ID not found on {location_str} sheet (with given sheet id)")
-            self.fetch_columnid_w_columname(row, df)
+            self.fetch_columnid_w_columname(row, df, location_str)
     def find_column_index(self, row, df, location_str):
         '''used to update the row when data is large and not in df, data can be located purely by index'''
         for count, column_name in enumerate(df['title'].tolist()):
@@ -406,4 +406,4 @@ if __name__ == "__main__":
     config = {'stoken':sensative_smartsheet_token, 'conductor_sheet_id': 7237912061339524}
     con = ConductorV2(config)
     con.cron_run()
-    # con.focused_run([364965002733444])
+    # con.focused_run([5103066726305668])
