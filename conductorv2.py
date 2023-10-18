@@ -1,6 +1,6 @@
 #region imports
 import smartsheet
-from smartsheet_grid.smartsheet_grid import grid
+from smartsheet_grid import grid
 import time
 from datetime import datetime
 import pandas as pd
@@ -230,7 +230,7 @@ class ConductorV2:
                 self.ss_post(posting_column_id, f"{location_str}_column_name", row['CONDUCTOR_rowid'], row[f'{location_str}_column_name'])
         except IndexError:
             self.ss_log(row['CONDUCTOR_rowid'], f"{location_str} COLUMN ID ERROR: Column ID not found on {location_str} sheet (with given sheet id)")
-            self.fetch_columnid_w_columname(row, df)
+            self.fetch_columnid_w_columname(row, df, location_str)
     def find_column_index(self, row, df, location_str):
         '''used to update the row when data is large and not in df, data can be located purely by index'''
         for count, column_name in enumerate(df['title'].tolist()):
