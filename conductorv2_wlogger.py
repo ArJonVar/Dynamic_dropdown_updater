@@ -4,8 +4,22 @@ from smartsheet_grid import grid
 import time
 from datetime import datetime
 import pandas as pd
-from globals import sensative_smartsheet_token
-from logger import ghetto_logger
+import os
+import sys
+# Check if we are on a dev computer or server
+if os.name == 'nt':
+    sys.path.append(r"Z:\Shared\IT\Projects and Solutions\Python\Ariel\_Master")
+else:
+    sys.path.append(os.path.expanduser(r"~/_Master"))
+
+# Import master_logger, master_smartsheet_grid, and master_globals
+try:
+    from master_logger import ghetto_logger
+    from master_smartsheet_grid import grid
+    from master_globals import smartsheet_automation_token
+except ImportError as e:
+    print(f"Error importing module: {e}")
+    sys.exit(1)
 #endregion
 
 class ConductorV2:
@@ -270,13 +284,11 @@ class ConductorV2:
         value_bundle=[]
         return [contact for contact in self.contact_list if not contact in value_bundle]
     def clean_pick_list(self):
-        '''grabs all values from columns that are not blank and not duplicates. This is for pick lists only'''
-        value_bundle = []
-        for item in self.inputs.get('SOURCE_grid_obj').df[self.inputs.get('SOURCE_column_name')].tolist():
-            if item != None:
-                if not(item in value_bundle):
-                    value_bundle.append(item)
-        return value_bundle
+        '''Grabs all values from columns that are not blank and not duplicates. This is for pick lists only.'''
+        source_column = self.inputs.get('SOURCE_column_name')
+        df = self.inputs.get('SOURCE_grid_obj').df
+        values = df[source_column].dropna().unique()
+        return sorted(values)
     def gather_dropdown_values(self):
         '''gather/clean data that will become the dropdown options in the destinations based on type'''
         if self.inputs.get("DESTINATION_dropdown_type") in ['picklist','multi-picklist']:
@@ -403,7 +415,7 @@ class ConductorV2:
     # endregion
 
 if __name__ == "__main__":
-    config = {'stoken':sensative_smartsheet_token, 'conductor_sheet_id': 7237912061339524}
+    config = {'stoken':smartsheet_automation_token, 'conductor_sheet_id': 7237912061339524}
     con = ConductorV2(config)
     con.cron_run()
-    # con.focused_run([5103066726305668])
+    # con.focused_run([5335898348064644])
